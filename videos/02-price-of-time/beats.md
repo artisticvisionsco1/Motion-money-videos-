@@ -5,7 +5,7 @@ Style: black background, dot grid, white line-art, bloom. One continuous canvas 
 | # | Voice | Visual | Label / number |
 |---|---|---|---|
 | 1 | "Your salary is the price of your time…" | The person (filled white) holds a glowing clock. A price tag swings from it. | `PRICE` tag |
-| 2 | "…not the value of it." | Pull out. Behind the person is a huge outline shape (a building) that the person casts as a light beam. | `VALUE` pill |
+| 2 | "…not the value of it." | Pull out. Behind the person, a huge outline building glows. It stands for the value of the work. | `VALUE` pill |
 | 3 | "Most people believe their paycheck…" | A paycheck slides in and lands on a balance scale opposite a "WORTH" weight. The scale balances. | `PAYCHECK = WORTH ?` |
 | 4 | "But a salary is simply… so that you stay." | Glide to an office door. A chain-link draws from the paycheck to the person's ankle (soft, not dark). | `SO YOU STAY` |
 | 5 | "Imagine earning twenty-five dollars an hour." | A clock face. Each tick drops a coin. | `$25 / HOUR` |
