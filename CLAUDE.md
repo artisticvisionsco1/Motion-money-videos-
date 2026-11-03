@@ -26,3 +26,21 @@ In short:
   - Money and mindset psychology, written in the second person. 155–210 words.
   - Hook paradox → "Most people…" → "But…" → "Imagine…" with real numbers → "This is why…" → "Of course…" → a closer that reuses the hook's words.
   - No jokes, no ending question.
+
+## Voice
+- ElevenLabs "Charliee - Calm Cinematic Narrator", voice_id `e70vjI59gG5dZUD6cZTQ`, model `eleven_v4`.
+- Generate 2 takes and pick the calmer one.
+- Store the pick in `videos/<name>/voice.json`.
+
+## Pipeline per video (`videos/<name>/`)
+1. `script.txt` (155–210 words) and `beats.md` (visual plan, one beat every ~3 s).
+2. Voice:
+   1. Make an ElevenLabs flow and run `creative_generate_speech`.
+   2. `curl` the chosen take to `voice.mp3`.
+   3. Get word timings with local ASR: `python3 engine/asr.py <model-dir> asr.json voice.mp3`, then `python3 engine/words.py asr.json voice.mp3 words.json`. Parakeet runs through sherpa-onnx; the model comes from GitHub releases (`k2-fsa/sherpa-onnx` `asr-models`). The result goes to `words.json` as `[{w,s,e}]`.
+3. `scene.js` defines `SCENE = {duration, camera:[moves], draw(g,t,cam)}` using the `engine/engine.js` helpers (`MM.*`).
+   - `MM.word(w, n)` returns the start of the nth occurrence of `w`. Punctuation is ignored, so "value," counts as "value". Always print and check every cue.
+4. Stills: `node engine/render.mjs <name> --stills`. Tile them and look at them.
+5. Full render: `node engine/render.mjs <name>` produces `out/<name>.silent.mp4` and `out/<name>.cues.json`.
+6. Audio: `python3 engine/audio.py <name>` builds the pad and whooshes. Then mix with the voice (loudnorm −15 LUFS, bed at 0.7) and mux into `renders/<name>.mp4`.
+7. Verify with a tile sheet. Commit and push.
