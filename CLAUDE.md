@@ -59,8 +59,10 @@ In short:
   - one practical takeaway the viewer can use today
   - smarter visuals: live calculators, diagrams that transform, counters tied to the math.
 
-## Post caption format (this account)
-- Line 1 is a hook that restates the paradox (≤ 12 words, 1 emoji).
-- Line 2 is one value sentence with the key number, plus 1 emoji.
-- Then 5–6 hashtags: niche ones first, then `#fyp`.
+## Post caption format (this account, owner wants it short)
+- One short hook line (≤ 10 words, 1 emoji).
+- Then 5 hashtags: niche ones first, `#fyp` last.
 - Save it as `videos/<name>/caption.txt`.
+
+## Length
+- Mix lengths: some videos 60 s+ (about 190–210 words), some 40–50 s (about 115–135 words at Robert's ~170 wpm).
