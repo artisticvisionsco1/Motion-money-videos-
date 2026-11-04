@@ -35,7 +35,7 @@
   //  focus: push in + defocus-blur the old shot, swap at the midpoint, settle into the new shot
   //  cut: dip to black and swap at the midpoint
   // Between moves the camera keeps slowly pushing in (E.DRIFT per second) so a frame is never frozen.
-  E.DRIFT = 0.016;
+  E.DRIFT = 0.024;
   const moveEnd = m => m.t + (m.d || 0.7);
   E.camera = (moves, t) => {
     let c = { x: moves[0].x, y: moves[0].y, z: moves[0].z };
@@ -381,5 +381,85 @@
       E.halo(g, pts[i][0], pts[i][1], 18, a * q); E.fill(g, a * q); g.beginPath(); g.arc(pts[i][0], pts[i][1], 4, 0, 7); g.fill();
       if (i > 0) { E.stroke(g, a * 0.7, 1.6); g.beginPath(); g.moveTo(...pts[i - 1]); g.lineTo(lerp(pts[i - 1][0], pts[i][0], q), lerp(pts[i - 1][1], pts[i][1], q)); g.stroke(); }
     }
+  };
+
+  // ---------- more icons (v3) ----------
+  // subscription / pricing card centred at (x,y). opts: {title, price, sub, hot (0..1 highlight), cross (0..1)}
+  E.card = (g, x, y, a, o = {}) => {
+    if (a <= 0) return;
+    const w = o.w || 260, h = o.h || 330, hot = o.hot || 0;
+    if (hot > 0) E.halo(g, x, y, w * 1.1, hot * a);
+    E.rr(g, x - w / 2, y - h / 2, w, h, 22);
+    E.fill(g, (0.05 + 0.85 * hot) * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    const v = hot > 0.5 ? 0 : 255;
+    g.save(); g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '700 22px Inter'; g.letterSpacing = '5px'; g.fillStyle = col(a, v); g.fillText(o.title || '', x + 2, y - h / 2 + 55);
+    g.font = '800 64px Inter'; g.letterSpacing = '0px'; g.fillText(o.price || '', x, y + 5);
+    g.font = '600 18px Inter'; g.letterSpacing = '4px'; g.fillStyle = col(a * 0.7, v); g.fillText(o.sub || '', x + 2, y + h / 2 - 50);
+    g.restore();
+    if (o.cross > 0) { E.stroke(g, a, 6); g.beginPath(); g.moveTo(x - w * 0.42, y - h * 0.42); g.lineTo(lerp(x - w * 0.42, x + w * 0.42, clamp(o.cross * 2)), lerp(y - h * 0.42, y + h * 0.42, clamp(o.cross * 2)));
+      if (o.cross > 0.5) { g.moveTo(x + w * 0.42, y - h * 0.42); g.lineTo(lerp(x + w * 0.42, x - w * 0.42, clamp(o.cross * 2 - 1)), lerp(y - h * 0.42, y + h * 0.42, clamp(o.cross * 2 - 1))); }
+      g.stroke(); }
+  };
+  // vertical percentage bar: bottom at (x,y), max height h, value pct 0..100 (already animated by caller)
+  E.pctBar = (g, x, y, h, pct, a, label) => {
+    if (a <= 0) return;
+    const w = 70;
+    E.stroke(g, a * 0.6, 2); E.rr(g, x - w / 2, y - h, w, h, 10); g.stroke();
+    const fh = h * pct / 100;
+    if (fh > 1) { E.rr(g, x - w / 2, y - fh, w, fh, 10); E.fill(g, a); g.fill(); E.halo(g, x, y - fh, 90, a * 0.5); }
+    E.big(g, Math.round(pct) + '%', x, y - h - 40, a, 40);
+    if (label) E.label(g, label, x, y + 36, a, 16);
+  };
+  E.popcorn = (g, x, y, s, a, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    g.beginPath(); g.moveTo(-60, -140); g.lineTo(-42, 0); g.lineTo(42, 0); g.lineTo(60, -140); g.closePath();
+    if (filled) { E.fill(g, a); g.fill(); } else { E.fill(g, 0.06 * a); g.fill(); } g.stroke();
+    for (const sx of [-20, 20]) { g.beginPath(); g.moveTo(sx * 1.5, -140); g.lineTo(sx, 0); g.stroke(); }
+    E.fill(g, a); for (let i = 0; i < 7; i++) { g.beginPath(); g.arc(-48 + i * 16, -150 - (i % 2) * 14, 16, 0, 7); filled ? g.fill() : g.stroke(); }
+    g.restore();
+  };
+  E.phone = (g, x, y, s, a, text) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    E.stroke(g, a, 3); E.rr(g, -60, -120, 120, 240, 18); E.fill(g, 0.06 * a); g.fill(); g.stroke();
+    E.rr(g, -18, -108, 36, 8, 4); E.fill(g, a); g.fill();
+    if (text) E.label(g, text, 0, 0, a, 20, { track: 0.1, weight: 700 });
+    g.restore();
+  };
+  E.car = (g, x, y, s, a, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    g.beginPath(); g.moveTo(-110, -30); g.lineTo(-110, -60); g.lineTo(-70, -65); g.lineTo(-40, -105); g.lineTo(45, -105); g.lineTo(80, -65); g.lineTo(110, -58); g.lineTo(110, -30); g.closePath();
+    if (filled) { E.fill(g, a); g.fill(); } else { E.fill(g, 0.06 * a); g.fill(); } g.stroke();
+    for (const wx of [-62, 62]) { E.fill(g, filled ? 0 : 0); g.beginPath(); g.arc(wx, -28, 24, 0, 7); g.fill(); E.stroke(g, a, 3); g.stroke(); }
+    g.restore();
+  };
+  E.apartment = (g, x, y, s, a, glow = 0) => { E.building(g, x, y, 200 * s, 300 * s, a, glow); };
+  E.plate = (g, x, y, s, a) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    g.beginPath(); g.ellipse(0, 0, 90, 26, 0, 0, 7); g.stroke(); g.beginPath(); g.ellipse(0, -2, 60, 16, 0, 0, 7); g.stroke();
+    g.beginPath(); g.arc(0, -10, 60, Math.PI, 0); g.stroke(); g.beginPath(); g.arc(0, -72, 7, 0, 7); g.stroke();
+    g.beginPath(); g.moveTo(-120, -40); g.lineTo(-120, 20); g.moveTo(120, -40); g.lineTo(120, 20); g.stroke();
+    g.restore();
+  };
+  // treadmill: belt moving with time, person optional handled by caller
+  E.treadmill = (g, x, y, s, a, t, speed = 1) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    g.beginPath(); g.moveTo(-170, 0); g.lineTo(170, 0); g.arc(170, 15, 15, -Math.PI / 2, Math.PI / 2); g.lineTo(-170, 30); g.arc(-170, 15, 15, Math.PI / 2, Math.PI * 1.5); g.stroke();
+    const off = (t * 120 * speed) % 40;
+    E.stroke(g, a * 0.6, 2); for (let i = -170; i < 170; i += 40) { const xx = i + off; if (xx > 168) continue; g.beginPath(); g.moveTo(xx, 4); g.lineTo(xx, 26); g.stroke(); }
+    E.stroke(g, a, 3); g.beginPath(); g.moveTo(130, 0); g.lineTo(150, -190); g.lineTo(100, -190); g.stroke();
+    E.rr(g, 90, -215, 70, 30, 6); g.stroke();
+    g.restore();
+  };
+  // line chart from series [[x,y]...] (world coords), revealed by p
+  E.chartLine = (g, pts, p, a = 1, w = 4, dashed = false) => {
+    if (dashed) g.setLineDash([14, 12]);
+    E.path(g, pts, p, a, w, true);
+    g.setLineDash([]);
   };
 })();
