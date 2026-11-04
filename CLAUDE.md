@@ -50,3 +50,17 @@ In short:
 5. Full render: `node engine/render.mjs <name>` produces `out/<name>.silent.mp4` and `out/<name>.cues.json`.
 6. Audio: `python3 engine/audio.py <name>` builds the pad and whooshes. Then mix with the voice (loudnorm −15 LUFS, bed at 1.5) and mux into `renders/<name>.mp4`.
 7. Verify with a tile sheet. Commit and push.
+
+## Quality bar (owner, 2026-11-04)
+- Match @cryothum **and go beyond it**. Do not copy, and do not be basic. Every video must be different and add real value.
+- Composition: content fills about 60 % of the frame, like the competitor. Video 02 only reached 42 %, so fix this first.
+- Value add over the competitor:
+  - one real, checkable number, study or named effect per video
+  - one practical takeaway the viewer can use today
+  - smarter visuals: live calculators, diagrams that transform, counters tied to the math.
+
+## Post caption format (this account)
+- Line 1 is a hook that restates the paradox (≤ 12 words, 1 emoji).
+- Line 2 is one value sentence with the key number, plus 1 emoji.
+- Then 5–6 hashtags: niche ones first, then `#fyp`.
+- Save it as `videos/<name>/caption.txt`.
