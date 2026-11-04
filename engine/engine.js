@@ -30,16 +30,36 @@
   };
 
   // ---------- camera ----------
-  // moves: [{t, d, x, y, z}] — at time t start gliding (duration d) to (x,y,z)
+  // moves: [{t, d, x, y, z, cut?, focus?}]
+  //  glide (default): eased move to (x,y,z) over d
+  //  focus: push in + defocus-blur the old shot, swap at the midpoint, settle into the new shot
+  //  cut: dip to black and swap at the midpoint
+  // Between moves the camera keeps slowly pushing in (E.DRIFT per second) so a frame is never frozen.
+  E.DRIFT = 0.016;
+  const moveEnd = m => m.t + (m.d || 0.7);
   E.camera = (moves, t) => {
     let c = { x: moves[0].x, y: moves[0].y, z: moves[0].z };
+    let settle = 0;
     for (let i = 1; i < moves.length; i++) {
       const m = moves[i];
       if (t <= m.t) break;
-      // cut: dip to black, jump at the midpoint (see E.dip)
-      const p = m.cut ? (t >= m.t + (m.d || 0.5) / 2 ? 1 : 0) : inOut(clamp((t - m.t) / (m.d || 0.7)));
-      c = { x: lerp(c.x, m.x, p), y: lerp(c.y, m.y, p), z: lerp(c.z, m.z ?? c.z, p) };
+      c.z *= 1 + E.DRIFT * Math.max(0, m.t - settle); // bake drift so there is no jump
+      const d = m.d || 0.7;
+      if (m.cut || m.focus) {
+        const mid = m.t + d / 2;
+        if (t < mid) {
+          if (m.focus) c = { ...c, z: c.z * (1 + 0.28 * inOut(clamp((t - m.t) / (d / 2)))) };
+          return c;
+        }
+        const k = clamp((t - mid) / (d / 2));
+        c = { x: m.x, y: m.y, z: m.focus ? m.z * (0.82 + 0.18 * out(k)) : m.z };
+      } else {
+        const p = inOut(clamp((t - m.t) / d));
+        c = { x: lerp(c.x, m.x, p), y: lerp(c.y, m.y, p), z: lerp(c.z, m.z ?? c.z, p) };
+      }
+      settle = moveEnd(m);
     }
+    c.z *= 1 + E.DRIFT * Math.max(0, t - settle);
     return c;
   };
 
@@ -48,6 +68,15 @@
     let d = 0;
     for (const m of moves) if (m.cut) {
       const h = (m.d || 0.5) / 2, k = 1 - Math.abs(t - (m.t + h)) / h;
+      if (k > 0) d = Math.max(d, inOut(clamp(k)));
+    }
+    return d;
+  };
+  // defocus amount 0..1 of focus transitions at time t
+  E.defocus = (moves, t) => {
+    let d = 0;
+    for (const m of moves) if (m.focus) {
+      const h = (m.d || 0.9) / 2, k = 1 - Math.abs(t - (m.t + h)) / h;
       if (k > 0) d = Math.max(d, inOut(clamp(k)));
     }
     return d;
@@ -71,38 +100,54 @@
     const g = sctx;
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+    stars(g, cam, t);
     g.setTransform(cam.z, 0, 0, cam.z, W / 2 - cam.x * cam.z, H / 2 - cam.y * cam.z);
     E.cam = cam;
     dotGrid(g, cam);
     g.lineCap = 'round'; g.lineJoin = 'round';
     scene.draw(g, t, cam);
-    // bloom: downsample, blur, add
+    // bloom: downsample, blur, add (tight glow, deep blacks)
     bctx.setTransform(1, 0, 0, 1, 0, 0);
     bctx.globalCompositeOperation = 'source-over';
     bctx.fillStyle = '#000'; bctx.fillRect(0, 0, bl.width, bl.height);
-    bctx.filter = 'blur(6px)'; bctx.drawImage(sc, 0, 0, bl.width, bl.height); bctx.filter = 'none';
+    bctx.filter = 'blur(3px)'; bctx.drawImage(sc, 0, 0, bl.width, bl.height); bctx.filter = 'none';
+    const fd = E.defocus(scene.camera, t);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+    if (fd > 0) ctx.filter = `blur(${(fd * 16).toFixed(1)}px) brightness(${(1 - 0.55 * fd).toFixed(3)})`;
     ctx.drawImage(sc, 0, 0);
     ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 0.6; ctx.drawImage(bl, 0, 0, W, H);
-    ctx.filter = 'blur(40px)'; ctx.globalAlpha = 0.32; ctx.drawImage(bl, 0, 0, W, H); ctx.filter = 'none';
+    ctx.globalAlpha = 0.55 * (1 - 0.5 * fd); ctx.drawImage(bl, 0, 0, W, H);
+    ctx.filter = 'blur(30px)'; ctx.globalAlpha = 0.14; ctx.drawImage(bl, 0, 0, W, H); ctx.filter = 'none';
     ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
     // vignette
     const v = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 1.05);
-    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.75)');
+    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.8)');
     ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
     const dk = E.dip(scene.camera, t);
     if (dk > 0) { ctx.fillStyle = `rgba(0,0,0,${dk})`; ctx.fillRect(0, 0, W, H); }
-    // global fade (scene.fade(t) 0..1)
     if (scene.fade) { const f = scene.fade(t); if (f < 1) { ctx.fillStyle = `rgba(0,0,0,${1 - f})`; ctx.fillRect(0, 0, W, H); } }
   };
+
+  // drifting, twinkling star particles in screen space with slight parallax
+  const STARS = (() => { let s = 1234567; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+    return Array.from({ length: 220 }, () => ({ x: r() * W, y: r() * H, z: 0.05 + r() * 0.25, s: 0.6 + r() * 1.6, ph: r() * 6.28, sp: 0.4 + r() * 1.2, vx: (r() - 0.5) * 6, vy: -2 - r() * 5 })); })();
+  function stars(g, cam, t) {
+    for (const p of STARS) {
+      let x = (p.x + p.vx * t - cam.x * p.z * 0.4) % W; if (x < 0) x += W;
+      let y = (p.y + p.vy * t - cam.y * p.z * 0.4) % H; if (y < 0) y += H;
+      const a = 0.12 + 0.28 * (0.5 + 0.5 * Math.sin(t * p.sp + p.ph));
+      g.fillStyle = `rgba(255,255,255,${a.toFixed(3)})`;
+      g.beginPath(); g.arc(x, y, p.s * (0.8 + cam.z * 0.2), 0, 7); g.fill();
+    }
+  }
 
   function dotGrid(g, cam) {
     const s = 36, hw = W / 2 / cam.z, hh = H / 2 / cam.z;
     const x0 = Math.floor((cam.x - hw) / s) * s, x1 = cam.x + hw;
     const y0 = Math.floor((cam.y - hh) / s) * s, y1 = cam.y + hh;
-    g.fillStyle = 'rgba(255,255,255,0.09)';
+    g.fillStyle = 'rgba(255,255,255,0.055)';
     const r = 1.3 / Math.max(cam.z, 0.5);
     for (let x = x0; x <= x1; x += s) for (let y = y0; y <= y1; y += s) g.fillRect(x - r, y - r, 2 * r, 2 * r);
   }
@@ -117,7 +162,7 @@
   E.halo = (g, x, y, r, a) => {
     if (a <= 0) return;
     const gr = g.createRadialGradient(x, y, 0, x, y, r);
-    gr.addColorStop(0, col(0.35 * a)); gr.addColorStop(0.4, col(0.12 * a)); gr.addColorStop(1, col(0));
+    gr.addColorStop(0, col(0.26 * a)); gr.addColorStop(0.35, col(0.07 * a)); gr.addColorStop(1, col(0));
     g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
   };
 
@@ -183,7 +228,7 @@
   E.person = (g, x, y, s, a, filled = true, pose = 'stand') => {
     if (a <= 0) return;
     g.save(); g.translate(x, y); g.scale(s, s);
-    if (filled) E.halo(g, 0, -70, 170, a * 0.8);
+    if (filled) E.halo(g, 0, -70, 120, a * 0.7);
     E.fill(g, a); E.stroke(g, a, 3);
     // head
     g.beginPath(); g.arc(0, -128, 26, 0, 7); filled ? g.fill() : g.stroke();
@@ -291,5 +336,50 @@
   E.ripple = (g, x, y, t, t0, r0 = 40, r1 = 220, d = 0.9) => {
     const p = clamp((t - t0) / d); if (p <= 0 || p >= 1) return;
     E.stroke(g, (1 - p) * 0.8, 2.5); g.beginPath(); g.arc(x, y, lerp(r0, r1, out(p)), 0, 7); g.stroke();
+  };
+  // ---------- builds ----------
+  // seeded random from a number
+  const rnd = seed => { let s = Math.floor(Math.abs(seed * 9301 + 49297)) % 233280 || 1; return () => (s = (s * 9301 + 49297) % 233280) / 233280; };
+  E.rnd = rnd;
+  // "assemble": particles converge from around (x,y) then the element pops in (scale outBack) with a ripple.
+  // fn(g, alpha) draws the element at its own coordinates. Returns alpha used.
+  E.build = (g, t, t0, x, y, size, fn, d = 0.7) => {
+    if (t < t0) return 0;
+    const k = clamp((t - t0) / d);
+    const r = rnd(t0 * 1000 + x);
+    if (k < 1) {
+      for (let i = 0; i < 18; i++) {
+        const an = r() * 6.283, dist = size * (1.2 + r() * 1.6), delay = r() * 0.35;
+        const q = clamp((k - delay) / 0.55); if (q <= 0) continue;
+        const e = out(q), sp = (1 - e) * 1.2;
+        const px = x + Math.cos(an + sp) * dist * (1 - e) + (r() - 0.5) * size * 0.8 * e;
+        const py = y + Math.sin(an + sp) * dist * (1 - e) + (r() - 0.5) * size * 0.8 * e;
+        const a = Math.sin(Math.PI * q) * 0.9;
+        g.fillStyle = col(a); g.beginPath(); g.arc(px, py, 2.6, 0, 7); g.fill();
+      }
+    }
+    const q = clamp((k - 0.35) / 0.65);
+    if (q <= 0) return 0;
+    const sc = 0.6 + 0.4 * outBack(q);
+    g.save(); g.translate(x, y); g.scale(sc, sc); g.translate(-x, -y);
+    fn(g, Math.min(1, q * 1.6));
+    g.restore();
+    E.ripple(g, x, y, t, t0 + d * 0.75, size * 0.4, size * 1.6, 0.8);
+    return Math.min(1, q * 1.6);
+  };
+  // walk in: returns {x, bob} moving from x0 to x1 over d seconds starting t0
+  E.walk = (t, t0, x0, x1, d = 1.0) => {
+    const k = clamp((t - t0) / d), e = inOut(k);
+    return { x: lerp(x0, x1, e), bob: k > 0 && k < 1 ? -Math.abs(Math.sin(k * d * 9)) * 8 : 0 };
+  };
+  // constellation: points connected in order, revealed by p (0..1)
+  E.constellation = (g, pts, p, a = 1) => {
+    if (p <= 0) return;
+    const n = pts.length, shown = p * n;
+    for (let i = 0; i < n; i++) {
+      const q = clamp(shown - i); if (q <= 0) break;
+      E.halo(g, pts[i][0], pts[i][1], 18, a * q); E.fill(g, a * q); g.beginPath(); g.arc(pts[i][0], pts[i][1], 4, 0, 7); g.fill();
+      if (i > 0) { E.stroke(g, a * 0.7, 1.6); g.beginPath(); g.moveTo(...pts[i - 1]); g.lineTo(lerp(pts[i - 1][0], pts[i][0], q), lerp(pts[i - 1][1], pts[i][1], q)); g.stroke(); }
+    }
   };
 })();

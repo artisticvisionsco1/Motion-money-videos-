@@ -36,10 +36,10 @@ for m in cues["moves"]:
     x = np.linspace(0, 1, ln)
     env = np.sin(np.pi * x) ** 2
     # sweep a lowpass from 600 -> 3500 Hz by blending two filtered copies
-    lo = lfilter([1 - np.exp(-2*np.pi*600/SR)], [1, -np.exp(-2*np.pi*600/SR)], seg)
-    hi = lfilter([1 - np.exp(-2*np.pi*3500/SR)], [1, -np.exp(-2*np.pi*3500/SR)], seg)
+    lo = lfilter([1 - np.exp(-2*np.pi*250/SR)], [1, -np.exp(-2*np.pi*250/SR)], seg)
+    hi = lfilter([1 - np.exp(-2*np.pi*1400/SR)], [1, -np.exp(-2*np.pi*1400/SR)], seg)
     w = (lo * (1 - x) + hi * x) * env
-    bed[s0:s0 + ln] += 0.10 * w / (np.abs(w).max() + 1e-9)
+    bed[s0:s0 + ln] += 0.07 * w / (np.abs(w).max() + 1e-9)
 fade = np.clip((dur - 0.5 - t) / 0.4, 0, 1) * np.clip(t / 0.3, 0, 1)
 bed *= fade
 out = (np.clip(bed, -1, 1) * 32767).astype(np.int16)

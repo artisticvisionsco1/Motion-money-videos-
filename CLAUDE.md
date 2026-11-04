@@ -28,9 +28,15 @@ In short:
   - No jokes, no ending question.
 
 ## Voice
-- ElevenLabs "Charliee - Calm Cinematic Narrator", voice_id `e70vjI59gG5dZUD6cZTQ`, model `eleven_v4`.
-- Generate 2 takes and pick the calmer one.
+- ElevenLabs "Robert - Business Book Narrator", voice_id `BtWabtumIemAotTjP5sk`, model `eleven_v4`. The owner picked it in the 2026-11-04 audition; it replaced Charliee.
+- Generate 2 takes. Run local ASR on both, diff each against the script, and pick the clean one.
 - Store the pick in `videos/<name>/voice.json`.
+
+## Motion rules (learned from the comparison in research/compare-02-vs-cryothum.md)
+- Never freeze. The camera keeps pushing in slowly (`MM.DRIFT`). Star particles drift behind everything.
+- Move between zones with `focus: true` moves: blur and push in, then swap. Never use long pans.
+- New things **build** in place: `MM.build` (particles converge, then a pop and a ripple), `MM.path` / draw-on outlines, `MM.walk` for people.
+- Aim for about 7 visual beats per 10 s. Content should fill about 60 % of the frame. Keep blacks deep and the glow tight.
 
 ## Pipeline per video (`videos/<name>/`)
 1. `script.txt` (155–210 words) and `beats.md` (visual plan, one beat every ~3 s).
@@ -42,5 +48,5 @@ In short:
    - `MM.word(w, n)` returns the start of the nth occurrence of `w`. Punctuation is ignored, so "value," counts as "value". Always print and check every cue.
 4. Stills: `node engine/render.mjs <name> --stills`. Tile them and look at them.
 5. Full render: `node engine/render.mjs <name>` produces `out/<name>.silent.mp4` and `out/<name>.cues.json`.
-6. Audio: `python3 engine/audio.py <name>` builds the pad and whooshes. Then mix with the voice (loudnorm −15 LUFS, bed at 0.7) and mux into `renders/<name>.mp4`.
+6. Audio: `python3 engine/audio.py <name>` builds the pad and whooshes. Then mix with the voice (loudnorm −15 LUFS, bed at 1.5) and mux into `renders/<name>.mp4`.
 7. Verify with a tile sheet. Commit and push.
