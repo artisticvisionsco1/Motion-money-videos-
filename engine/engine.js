@@ -462,4 +462,46 @@
     E.path(g, pts, p, a, w, true);
     g.setLineDash([]);
   };
+
+  // ---------- icons (v4) ----------
+  E.jar = (g, x, y, s, a, fill = 0) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    g.beginPath(); g.moveTo(-60, -170); g.lineTo(-60, -150); g.quadraticCurveTo(-90, -130, -90, -90); g.lineTo(-90, -10);
+    g.quadraticCurveTo(-90, 0, -78, 0); g.lineTo(78, 0); g.quadraticCurveTo(90, 0, 90, -10); g.lineTo(90, -90); g.quadraticCurveTo(90, -130, 60, -150); g.lineTo(60, -170); g.stroke();
+    g.strokeRect(-68, -195, 136, 25);
+    const fh = 140 * clamp(fill);
+    if (fh > 0) { E.fill(g, a * 0.9); g.fillRect(-80, -8 - fh, 160, fh); }
+    g.restore();
+  };
+  E.shield = (g, x, y, s, a, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    if (filled) E.halo(g, 0, 0, 160, a);
+    g.beginPath(); g.moveTo(0, -90); g.lineTo(75, -60); g.quadraticCurveTo(75, 40, 0, 95); g.quadraticCurveTo(-75, 40, -75, -60); g.closePath();
+    if (filled) { E.fill(g, a); g.fill(); } else { E.stroke(g, a, 3.5); g.stroke(); }
+    E.stroke(g, a, 6, filled ? 0 : 255); g.beginPath(); g.moveTo(-28, 0); g.lineTo(-6, 24); g.lineTo(32, -22); g.stroke();
+    g.restore();
+  };
+  E.dice = (g, x, y, s, a, n = 5, rot = 0) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.rotate(rot); g.scale(s, s);
+    E.rr(g, -45, -45, 90, 90, 16); E.fill(g, 0.06 * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    const P = { 1: [[0, 0]], 2: [[-20, -20], [20, 20]], 3: [[-20, -20], [0, 0], [20, 20]], 4: [[-20, -20], [20, -20], [-20, 20], [20, 20]], 5: [[-20, -20], [20, -20], [0, 0], [-20, 20], [20, 20]], 6: [[-20, -22], [20, -22], [-20, 0], [20, 0], [-20, 22], [20, 22]] }[n];
+    E.fill(g, a); for (const [px, py] of P) { g.beginPath(); g.arc(px, py, 7, 0, 7); g.fill(); }
+    g.restore();
+  };
+  E.briefcase = (g, x, y, s, a) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    E.rr(g, -80, -50, 160, 110, 14); E.fill(g, 0.06 * a); g.fill(); g.stroke();
+    E.rr(g, -28, -72, 56, 24, 8); g.stroke(); g.beginPath(); g.moveTo(-80, 0); g.lineTo(80, 0); g.stroke();
+    g.restore();
+  };
+  // monospace-ish formula text revealed char by char
+  E.typeText = (g, text, x, y, p, a = 1, size = 56) => {
+    if (p <= 0 || a <= 0) return;
+    const n = Math.floor(text.length * clamp(p));
+    E.big(g, text.slice(0, n), x, y, a, size);
+  };
 })();
