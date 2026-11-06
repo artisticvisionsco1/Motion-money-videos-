@@ -1,5 +1,7 @@
 # Motion money videos (new TikTok account)
 
+Account name: **CentMind** (username @centmind; fallback @thecentmind). Chosen by the owner on 2026-11-06.
+
 The owner speaks Hinglish. Reply in Hinglish (Roman Urdu/Hindi), short and clear.
 
 ## Separation rule (most important)
