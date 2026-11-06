@@ -3,7 +3,7 @@ const { p, win, clamp, lerp, inOut, out, outBack } = MM;
 const w = MM.word;
 
 const T = {
-  d200a: w('$200', 1), k700a: w('700,000', 1), most1: w('most', 1), salary: w('salary'), lucky: w('lucky'),
+  d200a: w('$200', 1), k700a: w('700,000', 1), most1: w('most', 1), getting: w('getting'), rich: w('rich'), salary: w('salary'), lucky: w('lucky'),
   but1: w('but', 1), powerful: w('powerful'), boring: w('boring'), time: w('time'),
   imagine1: w('imagine', 1), d200b: w('$200', 2), age: w('age'), y65: w('65'), k96: w('$96,000'), own: w('own'),
   r8a: w('8%', 1), ret1: w('return', 1), k698: w('698,000'), seven: w('seven'),
@@ -70,6 +70,12 @@ function zoneA(g, t) {
 function zoneB(g, t) {
   const x = B;
   const dimK = p(t, T.but1, 0.6);
+  // "Most people think getting rich needs…": a person thinking, fills the frame before the options appear
+  MM.build(g, t, T.most1 - 0.25, x - 40, -80, 120, (g2, a) => MM.person(g2, x - 40, 0, 1.15, a * (1 - 0.6 * dimK), true), 0.7);
+  for (let i = 0; i < 3; i++) { const a = p(t, T.most1 + 0.4 + i * 0.15, 0.3) * (1 - dimK); MM.stroke(g, a, 2.5); g.beginPath(); g.arc(x + 10 + i * 45, -200 - i * 38, 7 + i * 4, 0, 7); g.stroke(); }
+  MM.pill(g, 'GETTING RICH NEEDS…', x - 40, -400, win(t, T.getting - 0.2, T.but1), 22);
+  MM.big(g, '?', x - 40, -500, win(t, T.rich, T.salary) * (0.8 + 0.2 * Math.sin(t * 8)), 90);
+  MM.ground(g, x - 650, x + 650, 0, 0.6 * p(t, T.most1 - 0.2, 0.6));
   MM.build(g, t, T.salary - 0.3, x - 420, -300, 110, (g2, a) => MM.briefcase(g2, x - 420, -300, 1.4, a * (1 - 0.7 * dimK)));
   MM.label(g, 'BIG SALARY', x - 420, -150, p(t, T.salary, 0.4) * (1 - 0.7 * dimK), 20);
   MM.build(g, t, T.lucky - 0.3, x - 420, -470 + 380, 90, (g2, a) => { MM.dice(g2, x - 470, -40, 1, a * (1 - 0.7 * dimK), 5, 0.2 + t * 0.3 * (1 - dimK)); MM.dice(g2, x - 360, -40, 1, a * (1 - 0.7 * dimK), 3, -0.3 - t * 0.2 * (1 - dimK)); });
