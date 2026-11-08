@@ -257,7 +257,7 @@
     g.beginPath(); g.moveTo(-34, 60); g.lineTo(0, 40); g.lineTo(34, 60); g.lineTo(34, 130); g.lineTo(-34, 130); g.closePath();
     E.fill(g, a * 0.12); g.fill(); E.stroke(g, a, 3); g.stroke();
     g.beginPath(); g.arc(0, 56, 5, 0, 7); g.stroke();
-    if (text) { g.rotate(Math.PI / 2); E.label(g, text, 95, 0, a, 15, { track: 0.15, weight: 700 }); }
+    if (text) { g.rotate(Math.PI / 2); E.label(g, text, 100, 0, a, text.length > 6 ? 11 : 14, { track: 0.08, weight: 800 }); }
     g.restore();
   };
   E.building = (g, x, y, w, h, a, glow = 0) => {
@@ -503,5 +503,79 @@
     if (p <= 0 || a <= 0) return;
     const n = Math.floor(text.length * clamp(p));
     E.big(g, text.slice(0, n), x, y, a, size);
+  };
+
+  // ---------- icons (v5) ----------
+  // banknote centred at (x,y); value text; shrink 0..1 makes the printed value fade (inflation)
+  E.bill = (g, x, y, s, a, text = '$100', filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    if (filled) E.halo(g, 0, 0, 220, a * 0.7);
+    E.rr(g, -150, -70, 300, 140, 14); E.fill(g, filled ? a : 0.06 * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    E.stroke(g, a * 0.6, 2, filled ? 0 : 255); g.beginPath(); g.ellipse(0, 0, 44, 50, 0, 0, 7); g.stroke();
+    E.rr(g, -134, -54, 268, 108, 8); g.stroke();
+    g.font = '800 30px Inter'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = col(a, filled ? 0 : 255);
+    g.fillText(text, 0, 2); g.font = '700 18px Inter'; g.fillText(text.replace('$', ''), -112, -34); g.fillText(text.replace('$', ''), 112, 34);
+    g.restore();
+  };
+  E.receipt = (g, x, y, s, a, lines = [], total = '') => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    g.beginPath(); g.moveTo(-110, -170); g.lineTo(110, -170); g.lineTo(110, 160);
+    for (let i = 0; i < 8; i++) g.lineTo(110 - (i + 0.5) * 27.5, 160 + (i % 2 ? 0 : 12));
+    g.lineTo(-110, 160); g.closePath(); E.fill(g, 0.06 * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    g.font = '700 16px Inter'; g.letterSpacing = '3px'; g.textBaseline = 'middle'; g.fillStyle = col(a);
+    g.textAlign = 'center'; g.fillText('RECEIPT', 0, -140);
+    g.font = '600 15px Inter'; g.letterSpacing = '1px';
+    lines.forEach((l, i) => { g.textAlign = 'left'; g.fillText(l[0], -90, -95 + i * 32); g.textAlign = 'right'; g.fillText(l[1], 90, -95 + i * 32); });
+    E.stroke(g, a * 0.6, 2); g.beginPath(); g.moveTo(-90, 85); g.lineTo(90, 85); g.stroke();
+    g.font = '800 20px Inter'; g.textAlign = 'left'; g.fillText('TOTAL', -90, 115); g.textAlign = 'right'; g.fillText(total, 90, 115);
+    g.restore();
+  };
+  // Concorde-like delta-wing jet, nose to the right
+  E.plane = (g, x, y, s, a, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    if (filled) E.halo(g, 0, 0, 260, a * 0.6);
+    g.beginPath(); g.moveTo(230, 0); g.lineTo(150, -14); g.lineTo(-40, -18); g.lineTo(-170, -95); g.lineTo(-200, -95); g.lineTo(-150, -18); g.lineTo(-210, -14); g.lineTo(-240, -60); g.lineTo(-262, -60); g.lineTo(-245, 0);
+    g.lineTo(-262, 14); g.lineTo(-200, 18); g.lineTo(-40, 40); g.lineTo(-10, 80); g.lineTo(20, 80); g.lineTo(40, 22); g.lineTo(150, 14); g.closePath();
+    E.fill(g, filled ? a : 0.06 * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    g.restore();
+  };
+  E.ticket = (g, x, y, s, a, text = 'ADMIT ONE') => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    g.beginPath(); g.moveTo(-130, -60); g.lineTo(130, -60); g.lineTo(130, -18); g.arc(130, 0, 18, -Math.PI / 2, Math.PI / 2, true); g.lineTo(130, 60); g.lineTo(-130, 60); g.lineTo(-130, 18); g.arc(-130, 0, 18, Math.PI / 2, -Math.PI / 2, true); g.closePath();
+    E.fill(g, 0.06 * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    g.setLineDash([6, 6]); g.beginPath(); g.moveTo(70, -60); g.lineTo(70, 60); g.stroke(); g.setLineDash([]);
+    E.label(g, text, -30, 0, a, 18, { weight: 800 });
+    g.restore();
+  };
+  E.flag = (g, x, y, h, a, text, lit = 0) => {
+    if (a <= 0) return;
+    E.stroke(g, a, 3); g.beginPath(); g.moveTo(x, y); g.lineTo(x, y - h); g.stroke();
+    const w = Math.max(120, (text || '').length * 16 + 40);
+    g.beginPath(); g.moveTo(x, y - h); g.lineTo(x + w, y - h); g.lineTo(x + w - 18, y - h + 30); g.lineTo(x + w, y - h + 60); g.lineTo(x, y - h + 60); g.closePath();
+    E.fill(g, a * (0.1 + 0.9 * lit)); g.fill(); g.stroke(); if (lit) E.halo(g, x + w / 2, y - h + 30, w, lit * a);
+    if (text) E.label(g, text, x + w / 2 - 6, y - h + 30, a, 20, { weight: 800, track: 0.05, v: lit > 0.5 ? 0 : 255 });
+  };
+  // tree that grows: k 0..1 (seed → sapling → tree)
+  E.tree = (g, x, y, s, a, k) => {
+    if (a <= 0 || k <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    const h = 60 + 260 * k;
+    E.stroke(g, a, 3 + 5 * k); g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -h); g.stroke();
+    if (k > 0.25) { const b = clamp((k - 0.25) / 0.75); E.stroke(g, a, 2 + 3 * b); g.beginPath(); g.moveTo(0, -h * 0.5); g.lineTo(-70 * b, -h * 0.75); g.moveTo(0, -h * 0.6); g.lineTo(80 * b, -h * 0.85); g.stroke(); }
+    const r = 30 + 130 * k; E.halo(g, 0, -h - r * 0.2, r * 1.8, a * 0.5 * k);
+    g.beginPath(); g.arc(0, -h - r * 0.2, r, 0, 7); E.fill(g, a * (0.05 + 0.12 * k)); g.fill(); E.stroke(g, a, 3); g.stroke();
+    E.stroke(g, a * 0.7, 2); for (let i = 0; i < 5; i++) { const an = -2.6 + i * 0.55, rr = r * 0.55; g.beginPath(); g.arc(Math.cos(an) * rr * 0.6, -h - r * 0.2 + Math.sin(an) * rr * 0.4, r * 0.32, 0, 7); g.stroke(); }
+    g.restore();
+  };
+  E.cart = (g, x, y, s, a) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3.5);
+    g.beginPath(); g.moveTo(-110, -120); g.lineTo(-80, -120); g.lineTo(-50, -20); g.lineTo(90, -20); g.lineTo(110, -95); g.lineTo(-68, -95); g.stroke();
+    g.beginPath(); g.arc(-35, 10, 13, 0, 7); g.stroke(); g.beginPath(); g.arc(75, 10, 13, 0, 7); g.stroke();
+    g.restore();
   };
 })();
