@@ -578,4 +578,90 @@
     g.beginPath(); g.arc(-35, 10, 13, 0, 7); g.stroke(); g.beginPath(); g.arc(75, 10, 13, 0, 7); g.stroke();
     g.restore();
   };
+
+  // ---------- icons (v6) ----------
+  E.wheel = (g, x, y, r, a, rot, labels) => {
+    if (a <= 0) return;
+    const n = labels.length;
+    g.save(); g.translate(x, y);
+    E.halo(g, 0, 0, r * 1.5, a * 0.4);
+    E.stroke(g, a, 4); g.beginPath(); g.arc(0, 0, r, 0, 7); g.stroke();
+    for (let i = 0; i < n; i++) {
+      const an = rot + i * 2 * Math.PI / n;
+      E.stroke(g, a * 0.6, 2); g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(an) * r, Math.sin(an) * r); g.stroke();
+      const am = an + Math.PI / n; g.save(); g.rotate(am); E.label(g, labels[i], r * 0.68, 0, a, 22, { weight: 800, track: 0 }); g.restore();
+    }
+    E.fill(g, a); g.beginPath(); g.arc(0, 0, 14, 0, 7); g.fill();
+    g.beginPath(); g.moveTo(r + 34, 0); g.lineTo(r - 6, -18); g.lineTo(r - 6, 18); g.closePath(); g.fill();
+    g.restore();
+  };
+  // donut chart: segs [{f, label}], p reveals segments in order
+  E.donut = (g, x, y, r, segs, p, a = 1) => {
+    if (a <= 0 || p <= 0) return;
+    let start = -Math.PI / 2, shown = p * segs.length;
+    segs.forEach((sg, i) => {
+      const k = clamp(shown - i); if (k <= 0) return;
+      const end = start + sg.f * 2 * Math.PI * k;
+      g.beginPath(); g.arc(x, y, r, start, end); g.arc(x, y, r * 0.58, end, start, true); g.closePath();
+      E.fill(g, a * [0.95, 0.5, 0.22][i % 3]); g.fill(); E.stroke(g, a, 2.5, 0); g.stroke();
+      if (k >= 1 && sg.label) { const m = start + sg.f * Math.PI; E.label(g, sg.label, x + Math.cos(m) * r * 1.32, y + Math.sin(m) * r * 1.32, a, 20, { weight: 800 }); }
+      start += sg.f * 2 * Math.PI;
+    });
+  };
+  E.sticky = (g, x, y, s, a, lines) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.rotate(-0.04); g.scale(s, s);
+    E.halo(g, 0, 0, 260, a * 0.5);
+    g.beginPath(); g.moveTo(-150, -150); g.lineTo(150, -150); g.lineTo(150, 100); g.lineTo(100, 150); g.lineTo(-150, 150); g.closePath();
+    E.fill(g, a); g.fill();
+    g.beginPath(); g.moveTo(150, 100); g.lineTo(100, 100); g.lineTo(100, 150); E.fill(g, a * 0.6, 120); g.fill();
+    lines.forEach((l, i) => E.label(g, l, 0, -80 + i * 62, a, 34, { v: 0, weight: 800, track: 0.04 }));
+    g.restore();
+  };
+  // bank cheque
+  E.cheque = (g, x, y, s, a, amount, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    if (filled) E.halo(g, 0, 0, 280, a * 0.6);
+    E.rr(g, -200, -90, 400, 180, 14); E.fill(g, filled ? a : 0.06 * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    const v = filled ? 0 : 255;
+    E.label(g, 'PAY TO THE ORDER OF: YOU', -40, -55, a, 12, { v, align: 'center', track: 0.12 });
+    E.stroke(g, a * 0.6, 2, v); g.beginPath(); g.moveTo(-170, 10); g.lineTo(60, 10); g.moveTo(-170, 55); g.lineTo(0, 55); g.stroke();
+    E.rr(g, 80, -20, 100, 50, 8); g.stroke();
+    E.label(g, amount, 130, 6, a, 20, { v, weight: 800, track: 0 });
+    g.restore();
+  };
+  E.robe = (g, x, y, s, a, filled = true) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    if (filled) E.halo(g, 0, -120, 220, a * 0.7);
+    g.beginPath(); g.moveTo(-40, -250); g.lineTo(40, -250); g.lineTo(120, -190); g.lineTo(90, -150); g.lineTo(70, -165); g.lineTo(85, 0); g.lineTo(-85, 0); g.lineTo(-70, -165); g.lineTo(-90, -150); g.lineTo(-120, -190); g.closePath();
+    E.fill(g, filled ? a : 0.06 * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    E.stroke(g, a, 3, filled ? 0 : 255); g.beginPath(); g.moveTo(-40, -250); g.lineTo(0, -170); g.lineTo(40, -250); g.moveTo(0, -170); g.lineTo(0, 0); g.moveTo(-70, -100); g.lineTo(70, -100); g.stroke();
+    g.restore();
+  };
+  E.chair = (g, x, y, s, a, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    g.beginPath(); g.moveTo(-50, -230); g.lineTo(-50, 0); g.moveTo(-50, -100); g.lineTo(60, -100); g.lineTo(60, 0); g.stroke();
+    E.rr(g, -60, -110, 130, 22, 6); E.fill(g, filled ? a : 0.06 * a); g.fill(); g.stroke();
+    E.rr(g, -60, -235, 22, 130, 6); E.fill(g, filled ? a : 0.06 * a); g.fill(); g.stroke();
+    g.restore();
+  };
+  E.desk = (g, x, y, s, a, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    E.rr(g, -130, -130, 260, 24, 6); E.fill(g, filled ? a : 0.06 * a); g.fill(); g.stroke();
+    g.beginPath(); g.moveTo(-115, -106); g.lineTo(-115, 0); g.moveTo(115, -106); g.lineTo(115, 0); g.stroke();
+    g.strokeRect(30, -106, 70, 50);
+    g.restore();
+  };
+  E.sofa = (g, x, y, s, a, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s); E.stroke(g, a, 3);
+    E.rr(g, -160, -130, 320, 80, 20); E.fill(g, filled ? a : 0.06 * a); g.fill(); g.stroke();
+    E.rr(g, -180, -80, 360, 60, 18); g.fill(); g.stroke();
+    g.beginPath(); g.moveTo(-160, -20); g.lineTo(-160, 0); g.moveTo(160, -20); g.lineTo(160, 0); g.stroke();
+    g.restore();
+  };
 })();

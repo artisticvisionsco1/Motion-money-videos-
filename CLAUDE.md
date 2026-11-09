@@ -31,7 +31,7 @@ In short:
 
 ## Voice
 - ElevenLabs "Robert - Business Book Narrator", voice_id `BtWabtumIemAotTjP5sk`, model `eleven_v4`. The owner picked it in the 2026-11-04 audition; it replaced Charliee.
-- Generate 2 takes. Run local ASR on both, diff each against the script, and pick the clean one.
+- Generate **1 take only** (owner, 2026-11-09: save credits). Check it with local ASR against the script (`engine/takes.py`). Regenerate only if words are wrong.
 - Store the pick in `videos/<name>/voice.json`.
 
 ## Motion rules (learned from the comparison in research/compare-02-vs-cryothum.md)
