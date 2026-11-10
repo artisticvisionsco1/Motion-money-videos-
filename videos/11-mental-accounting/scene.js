@@ -49,7 +49,7 @@ function zoneC(g, t) {
   MM.build(g, t, T.mental - 0.4, x, -560, 240, (g2, a) => MM.big(g2, 'MENTAL ACCOUNTS', x, -555, a, 58), 0.8);
   const bx = [x - 300, x + 300], names = ['SALARY', 'WINDFALLS'];
   for (let i = 0; i < 2; i++) {
-    const a = p(t, T.thaler + i * 0.3, 0.6), glow = i === 1 ? p(t, T.easier - 0.3, 0.6) : 0;
+    const a = p(t, T.but1 + 0.1 + i * 0.3, 0.6), glow = i === 1 ? p(t, T.easier - 0.3, 0.6) : 0;
     if (glow) MM.halo(g, bx[i], -200, 300, glow);
     MM.rr(g, bx[i] - 190, -400, 380, 340, 26); MM.fill(g, (0.04 + 0.25 * glow) * a); g.fill(); MM.stroke(g, a, 3); g.stroke();
     MM.label(g, names[i], bx[i], -360, a, 22, { weight: 800 });

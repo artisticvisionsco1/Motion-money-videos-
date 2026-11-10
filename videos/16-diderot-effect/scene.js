@@ -74,7 +74,7 @@ function zoneE(g, t) {
 function zoneF(g, t) {
   const x = F;
   MM.pill(g, "UPGRADING ISN'T ALWAYS WRONG", x, -620, win(t, T.course - 0.1, null), 20);
-  const ck = p(t, T.but - 0.2, 0.5);
+  const ck = p(t, T.course + 0.2, 0.5);
   MM.rr(g, x - 600, -500, 1200, 360, 28); MM.fill(g, 0.04 * ck); g.fill(); MM.stroke(g, ck, 3); g.stroke();
   MM.label(g, 'BEFORE YOU BUY, ASK:', x, -440, ck, 20);
   MM.typeText(g, 'WHAT ELSE WILL THIS', x, -350, clamp((t - T.but - 0.2) / 1.4), 1, 54);

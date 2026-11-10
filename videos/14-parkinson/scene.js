@@ -71,7 +71,7 @@ function zoneD(g, t) {
   MM.ground(g, x - 700, x + 700, 0, 0.6);
   MM.pill(g, 'SOME IS FINE ✓', x - 420, -560, win(t, T.course, null), 20);
   // payday: money moves out first
-  const ck = p(t, T.but2 - 0.2, 0.5);
+  const ck = p(t, T.course + 0.1, 0.5);
   MM.rr(g, x - 600, -420, 360, 300, 20); MM.stroke(g, ck, 3); g.stroke(); MM.label(g, 'PAYDAY', x - 420, -380, ck, 20, { weight: 800 });
   MM.coin(g, x - 420, -260, 48, ck);
   MM.label(g, "DON'T LEAVE IT LYING AROUND", x - 420, -60, win(t, T.lying - 0.4, null), 16);

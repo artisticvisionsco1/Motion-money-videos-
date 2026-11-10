@@ -41,9 +41,9 @@ function zoneB(g, t) {
   const x = B;
   MM.pill(g, '1890s · VILFREDO PARETO', x, -660, win(t, T.y1890 - 0.2, null), 20);
   MM.ground(g, x - 650, x + 650, 0, 0.6);
-  for (let i = 0; i < 10; i++) { const rich = i < 2; MM.person(g, x - 560 + i * 125, 0, 0.6, p(t, T.y1890 + i * 0.08, 0.4), rich && t > T.r20b); }
+  for (let i = 0; i < 10; i++) { const rich = i < 2; MM.person(g, x - 560 + i * 125, 0, 0.85, p(t, T.y1890 + i * 0.08, 0.4), rich && t > T.r20b); }
   // land bar
-  const lk = p(t, T.italy - 0.3, 0.8), W = 1200;
+  const lk = p(t, T.y1890 + 0.5, 0.8), W = 1200;
   MM.rr(g, x - W / 2, -440, W, 120, 16); MM.stroke(g, lk, 3); g.stroke();
   const share = 0.8 * p(t, T.r80b - 0.2, 0.8);
   MM.rr(g, x - W / 2, -440, W * Math.max(0.01, share), 120, 16); MM.fill(g, lk); g.fill();
