@@ -68,3 +68,7 @@ In short:
 
 ## Length
 - Mix lengths: some videos 60 s+ (about 190–210 words), some 40–50 s (about 115–135 words at Robert's ~170 wpm).
+
+## Delivery numbering (owner, 2026-11-10)
+- When delivering a batch, number its videos **1, 2, 3, …** within that batch, not by folder number.
+- End with a **total** line: how many CentMind videos exist so far, counting every folder in `renders/`.

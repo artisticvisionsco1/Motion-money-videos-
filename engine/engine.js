@@ -664,4 +664,35 @@
     g.beginPath(); g.moveTo(-160, -20); g.lineTo(-160, 0); g.moveTo(160, -20); g.lineTo(160, 0); g.stroke();
     g.restore();
   };
+
+  // ---------- icons (v7) ----------
+  E.mug = (g, x, y, s, a, filled = false) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    if (filled) E.halo(g, 0, -60, 170, a * 0.7);
+    g.beginPath(); g.moveTo(-60, -130); g.lineTo(60, -130); g.lineTo(52, 0); g.lineTo(-52, 0); g.closePath();
+    E.fill(g, filled ? a : 0.06 * a); g.fill(); E.stroke(g, a, 3.5); g.stroke();
+    g.beginPath(); g.arc(70, -70, 34, -Math.PI / 2, Math.PI / 2); g.stroke();
+    for (let i = 0; i < 3; i++) { E.stroke(g, a * 0.6, 2.5); g.beginPath(); g.moveTo(-30 + i * 30, -150); g.quadraticCurveTo(-40 + i * 30, -175, -30 + i * 30, -200); g.stroke(); }
+    g.restore();
+  };
+  E.ccard = (g, x, y, s, a, filled = false, text = '') => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    if (filled) E.halo(g, 0, 0, 260, a * 0.6);
+    E.rr(g, -170, -105, 340, 210, 20); E.fill(g, filled ? a : 0.06 * a); g.fill(); E.stroke(g, a, 3); g.stroke();
+    const v = filled ? 0 : 255;
+    E.rr(g, -140, -55, 56, 42, 8); E.stroke(g, a, 2.5, v); g.stroke();
+    E.label(g, '••••  ••••  ••••  4021', 0, 30, a, 18, { v, track: 0.05, weight: 700 });
+    if (text) E.label(g, text, 80, -60, a, 16, { v, weight: 800 });
+    g.restore();
+  };
+  E.toggle = (g, x, y, s, a, on) => {
+    if (a <= 0) return;
+    g.save(); g.translate(x, y); g.scale(s, s);
+    E.rr(g, -70, -36, 140, 72, 36); E.fill(g, a * (0.1 + 0.85 * on)); g.fill(); E.stroke(g, a, 3); g.stroke();
+    E.fill(g, a, on > 0.5 ? 0 : 255); g.beginPath(); g.arc(lerp(-34, 34, on), 0, 26, 0, 7); g.fill();
+    if (on > 0.5) E.halo(g, 0, 0, 160, a * 0.5 * on);
+    g.restore();
+  };
 })();

@@ -34,7 +34,9 @@ wf(path.join(outDir, name + '.cues.json'), JSON.stringify(await page.evaluate(()
 
 if (stills) {
   // 12 stills -> contact sheet
-  const times = Array.from({ length: 12 }, (_, i) => +(0.5 + i * (dur - 1) / 11).toFixed(2));
+  const atArg = args.indexOf('--at');
+  const times = atArg >= 0 ? args[atArg + 1].split(',').map(Number) : Array.from({ length: 12 }, (_, i) => +(0.5 + i * (dur - 1) / 11).toFixed(2));
+  const sdir0 = path.join(outDir, name + '-stills'); try { (await import('fs')).rmSync(sdir0, { recursive: true, force: true }); } catch (e) {}
   const sdir = path.join(outDir, name + '-stills'); mkdirSync(sdir, { recursive: true });
   const { writeFileSync } = await import('fs');
   for (const [i, t] of times.entries()) {
