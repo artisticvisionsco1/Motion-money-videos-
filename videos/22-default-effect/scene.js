@@ -82,9 +82,13 @@ function zoneD(g, t) {
 function zoneE(g, t) {
   const x = E2;
   MM.label(g, 'WORKERS IN THE PLAN', x, -680, p(t, T.participation - 0.3, 0.4), 20);
-  const a1 = p(t, T.participation - 0.3, 0.4), a2 = p(t, T.eighty - 0.8, 0.4);
-  MM.pctBar(g, x - 380, -100, 460, 37 * out(clamp((t - T.p37 + 0.6) / 1.0)), a1, 'YOU OPT IN');
+  const a1 = p(t, T.participation - 0.3, 0.4), a2 = p(t, T.participation, 0.4);
+  MM.pctBar(g, x - 380, -100, 460, 37 * out(clamp((t - T.participation - 0.3) / 2.0)), a1, 'YOU OPT IN');
   MM.pctBar(g, x + 380, -100, 460, 86 * out(clamp((t - T.eighty + 0.4) / 1.2)), a2, 'AUTO-ENROLLED');
+  MM.build(g, t, T.participation - 0.2, x - 600, -330, 80, (g2, a) => MM.toggle(g2, x - 600, -330, 1.1, a, 0));
+  MM.build(g, t, T.participation + 0.2, x + 600, -330, 80, (g2, a) => MM.toggle(g2, x + 600, -330, 1.1, a, 1));
+  MM.label(g, 'DEFAULT OFF', x - 600, -260, p(t, T.participation, 0.4), 14, { weight: 800 });
+  MM.label(g, 'DEFAULT ON', x + 600, -260, p(t, T.participation + 0.4, 0.4), 14, { weight: 800 });
   const ck = p(t, T.eighty + 0.9, 0.4);
   MM.label(g, '86 − 37', x, -440, ck, 26, { weight: 800 });
   MM.big(g, '+' + Math.round(49 * out(clamp((t - T.eighty - 0.9) / 1.0))), x, -340, ck, 96);

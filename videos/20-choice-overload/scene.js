@@ -86,6 +86,8 @@ function zoneD(g, t) {
   const a1 = p(t, T.but1 - 0.1, 0.4), a2 = p(t, T.but1 + 0.3, 0.4);
   MM.pctBar(g, x - 330, -100, 460, 3 * out(clamp((t - T.p3 + 0.3) / 0.9)), a1, '24 FLAVORS');
   MM.pctBar(g, x + 330, -100, 460, 30 * out(clamp((t - T.p30 + 0.4) / 1.1)), a2, '6 FLAVORS');
+  jars(g, t, 24, 4, x - 580, -330, 0.2, T.but1 - 0.3, 0.02);
+  jars(g, t, 6, 2, x + 580, -330, 0.26, T.but1 - 0.1, 0.05);
   MM.build(g, t, T.jar - 0.3, x - 170, -160, 80, (g2, a) => MM.jar(g2, x - 170, -100, 0.4, a, 0.7));
   // live calculator: 30 ÷ 3
   const ck = p(t, T.ten - 0.5, 0.4);
@@ -131,7 +133,7 @@ function zoneG(g, t) {
     const a = p(t, T.but2 - 0.3 + i * 0.05, 0.35) * (k >= 0 ? 1 : 1 - ck);
     const hot = k === 1 ? p(t, T.pick - 0.2, 0.5) : 0;
     const big = k >= 0 ? lerp(1, 1.5, ck) : 1;
-    MM.card(g, lerp(gx, fx, ck), lerp(gy, fy, ck), a, { w: 220 * big, h: 120 * big, hot, title: 'OPTION', price: k >= 0 ? String(k + 1) : '' });
+    MM.card(g, lerp(gx, fx, ck), lerp(gy, fy, ck), a, { w: 220 * big, h: 120 * big, hot, title: k >= 0 ? '' : 'OPTION', price: k >= 0 ? String(k + 1) : '' });
   }
   MM.ripple(g, x, -340, t, T.pick, 120, 500, 0.9);
   MM.pill(g, 'PICK ONE ✓', x, -100, win(t, T.pick - 0.1, null), 24, true);
