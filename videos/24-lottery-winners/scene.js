@@ -57,7 +57,7 @@ function zoneC(g, t) {
   MM.build(g, t, T.but1 + 0.3, x - 300, -280, 140, (g2, a) => MM.ticket(g2, x - 300, -280, 1.5, a, 'LOTTERY'));
   MM.ripple(g, x - 300, -280, t, T.lottery, 80, 420, 0.9);
   const pk = out(clamp((t - T.but1 - 1.0) / (T.prizes - T.but1 - 0.6)));
-  MM.big(g, MM.money(50000 + 950000 * pk), x + 300, -300, p(t, T.but1 + 0.8, 0.4), 64);
+  MM.big(g, MM.money(Math.round((50000 + 950000 * pk) / 1000) * 1000), x + 300, -300, p(t, T.but1 + 0.8, 0.4), 64);
   MM.label(g, 'PRIZES: $50,000 TO $1,000,000', x + 300, -220, p(t, T.prizes - 0.4, 0.4), 16, { weight: 800 });
   MM.label(g, 'WINNERS INTERVIEWED', x, -80, p(t, T.but1 + 0.8, 0.4), 20, { weight: 800 });
 }

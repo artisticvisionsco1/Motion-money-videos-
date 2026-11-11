@@ -56,8 +56,8 @@ function zoneC(g, t) {
   const nm = [['ELIZABETH DUNN', T.dunn], ['LARA AKNIN', T.acknan], ['MICHAEL NORTON', T.norton]];
   nm.forEach(([n, ts], i) => MM.typeText(g, n, x - 420 + i * 420, -570, clamp((t - ts + 0.3) / 0.8), 1, 28));
   MM.label(g, 'PSYCHOLOGISTS', x, -500, p(t, T.y2008, 0.4), 18);
-  MM.build(g, t, T.but1 + 0.5, x - 280, -300, 140, (g2, a) => envelope(g2, x - 280, -300, 1.2, a, '$5'));
-  MM.build(g, t, T.but1 + 0.9, x + 280, -300, 140, (g2, a) => envelope(g2, x + 280, -300, 1.2, a, '$20', true));
+  MM.build(g, t, T.but1 - 0.1, x - 280, -300, 140, (g2, a) => envelope(g2, x - 280, -300, 1.2, a, '$5'));
+  MM.build(g, t, T.but1 + 0.2, x + 280, -300, 140, (g2, a) => envelope(g2, x + 280, -300, 1.2, a, '$20', true));
   MM.ripple(g, x - 280, -300, t, T.five1, 80, 360, 0.8); MM.ripple(g, x + 280, -300, t, T.twenty1, 80, 360, 0.8);
   MM.build(g, t, T.handed - 0.4, x, -300, 80, (g2, a) => MM.clock(g2, x, -300, 70, a, t, 0.4, false));
   MM.label(g, 'IN THE MORNING', x, -190, p(t, T.morning - 0.5, 0.4), 18, { weight: 800 });
@@ -85,11 +85,11 @@ function zoneE(g, t) {
   const x = E2;
   MM.label(g, 'HAPPINESS BY EVENING', x, -680, p(t, T.evening - 0.4, 0.4), 20);
   MM.build(g, t, T.evening - 0.4, x + 600, -600, 60, (g2, a) => MM.clock(g2, x + 600, -600, 50, a, t, 0.3, false));
-  const a = p(t, T.evening - 0.3, 0.4), k1 = out(clamp((t - T.evening) / 1.0)), k2 = out(clamp((t - T.others + 0.4) / 1.2));
+  const a = p(t, T.evening - 0.3, 0.4), k1 = out(clamp((t - T.evening) / 1.0)), k2 = out(clamp((t - T.evening - 0.2) / 2.0));
   const h1 = 180 * k1, h2 = 330 * k2;
   MM.rr(g, x - 470, -80 - h1, 200, h1, 16); MM.stroke(g, a, 3); g.stroke(); MM.label(g, 'SPENT ON SELF', x - 370, -30, a, 18, { weight: 800 });
   MM.rr(g, x + 270, -80 - h2, 200, h2, 16); MM.fill(g, a); g.fill(); MM.halo(g, x + 370, -80 - h2, 120, a * 0.5); MM.label(g, 'SPENT ON OTHERS', x + 370, -30, a, 18, { weight: 800 });
-  MM.build(g, t, T.happier - 0.2, x + 370, -560, 70, (g2, aa) => MM.star(g2, x + 370, -500, 44, aa, true));
+  MM.build(g, t, T.others - 0.6, x + 370, -500, 70, (g2, aa) => MM.star(g2, x + 370, -500, 44, aa, true));
   MM.pill(g, 'HAPPIER', x + 370, -590, win(t, T.happier - 0.2, null), 20, true);
   // amount didn't matter
   const ak = p(t, T.amount - 0.3, 0.4);

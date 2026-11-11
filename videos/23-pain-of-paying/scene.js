@@ -49,7 +49,7 @@ function zoneC(g, t) {
   MM.typeText(g, 'DUNCAN SIMESTER', x + 320, -560, clamp((t - T.simister + 0.5) / 0.8), 1, 34);
   MM.build(g, t, T.y2001 - 0.2, x - 320, -300, 140, (g2, a) => MM.building(g2, x - 320, -150, 260, 280, a, 0.3));
   MM.label(g, 'MIT', x - 320, -110, p(t, T.mit - 0.3, 0.4), 22, { weight: 800 });
-  MM.build(g, t, T.auctioned - 0.3, x + 320, -330, 130, (g2, a) => MM.ticket(g2, x + 320, -330, 1.4, a, 'CELTICS'));
+  MM.build(g, t, T.mit + 0.3, x + 320, -330, 130, (g2, a) => MM.ticket(g2, x + 320, -330, 1.4, a, 'CELTICS'));
   MM.pill(g, 'SOLD OUT', x + 320, -200, win(t, T.tickets, null), 20, true);
   MM.label(g, 'REAL AUCTION · REAL TICKETS', x + 320, -110, p(t, T.celtics - 0.3, 0.4), 16, { weight: 800 });
   MM.ripple(g, x + 320, -330, t, T.tickets + 0.2, 80, 400, 0.9);
@@ -93,8 +93,8 @@ function zoneF(g, t) {
   MM.label(g, 'PAIN OF PAYING', x, -680, p(t, T.cash2 - 0.4, 0.4), 22, { weight: 800 });
   MM.build(g, t, T.cash2 - 0.3, x - 420, -330, 120, (g2, a) => MM.bill(g2, x - 420 - 60 * p(t, T.hurts, 1.0), -330 - 40 * p(t, T.hurts, 1.0), 0.9, a, '$50', true));
   MM.pctBar(g, x - 150, -100, 420, 85 * out(clamp((t - T.hurts) / 0.9)), p(t, T.cash2 - 0.2, 0.4), 'CASH');
-  MM.build(g, t, T.removes - 0.5, x + 420, -330, 120, (g2, a) => MM.ccard(g2, x + 420, -330, 0.8, a, false, 'TAP'));
-  MM.pctBar(g, x + 150, -100, 420, 85 - 70 * out(clamp((t - T.removes) / 0.9)), p(t, T.removes - 0.4, 0.4), 'CARD');
+  MM.build(g, t, T.cash2 + 0.5, x + 420, -330, 120, (g2, a) => MM.ccard(g2, x + 420, -330, 0.8, a, false, 'TAP'));
+  MM.pctBar(g, x + 150, -100, 420, 85 - 70 * out(clamp((t - T.removes) / 0.9)), p(t, T.cash2 + 0.6, 0.4), 'CARD');
   MM.label(g, 'IT HURTS A LITTLE', x - 420, -200, win(t, T.hurts, null), 16, { weight: 800 });
   MM.pill(g, 'SPENDING FEELS EASY', x + 420, -200, win(t, T.easy - 0.4, null), 18, true);
 }
