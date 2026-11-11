@@ -47,6 +47,11 @@ function zoneC(g, t) {
   MM.path(g, [[X(0), Y(5300)], [X(0), -60], [X(140), -60]], ak, 0.7, 2.5, false);
   for (const yr of [0, 2, 4, 6, 8, 10]) MM.label(g, yr + ' YR', X(yr * 12), -25, ak, 13);
   MM.big(g, '$5,000 · 22%', x - 300, -660, p(t, T.k5a - 0.3, 0.4), 46);
+  { const fo = 1 - p(t, T.d100 + 0.2, 0.4);
+    MM.build(g, t, T.k5a - 0.3, x + 330, -400, 150, (g2, a) => MM.ccard(g2, x + 330, -400, 1.3, a * fo, true, '$5,000'));
+    MM.label(g, '22% A YEAR = INTEREST EVERY MONTH', x + 330, -230, p(t, T.r22 - 0.2, 0.4) * fo, 16, { weight: 800 });
+    MM.big(g, '+$' + Math.round(92 * out(clamp((t - T.r22) / 1.0))) + ' / MO', x + 330, -150, p(t, T.r22, 0.4) * fo, 52);
+    MM.coin(g, X(0), Y(5000), 14, p(t, T.k5a, 0.4)); MM.ripple(g, X(0), Y(5000), t, T.k5a + 0.2, 20, 160, 0.8); }
   // $100 / month path
   const k1 = clamp((t - T.d100 + 0.2) / (T.k87 - T.d100 + 0.3));
   const n1 = Math.floor(k1 * (S100.bal.length - 1)), pts = [];

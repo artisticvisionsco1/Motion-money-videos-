@@ -83,7 +83,7 @@ function zoneC(g, t) {
 function zoneD(g, t) {
   const x = D;
   MM.label(g, 'TASTERS WHO BOUGHT A JAR', x, -650, p(t, T.but1 - 0.1, 0.4), 20);
-  const a1 = p(t, T.but1 - 0.1, 0.4), a2 = p(t, T.six2 - 0.4, 0.4);
+  const a1 = p(t, T.but1 - 0.1, 0.4), a2 = p(t, T.but1 + 0.3, 0.4);
   MM.pctBar(g, x - 330, -100, 460, 3 * out(clamp((t - T.p3 + 0.3) / 0.9)), a1, '24 FLAVORS');
   MM.pctBar(g, x + 330, -100, 460, 30 * out(clamp((t - T.p30 + 0.4) / 1.1)), a2, '6 FLAVORS');
   MM.build(g, t, T.jar - 0.3, x - 170, -160, 80, (g2, a) => MM.jar(g2, x - 170, -100, 0.4, a, 0.7));
