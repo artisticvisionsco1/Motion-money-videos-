@@ -33,6 +33,11 @@ In short:
 - ElevenLabs "Robert - Business Book Narrator", voice_id `BtWabtumIemAotTjP5sk`, model `eleven_v4`. The owner picked it in the 2026-11-04 audition; it replaced Charliee.
 - Generate **1 take only** (owner, 2026-11-09: save credits). Check it with local ASR against the script (`engine/takes.py`). Regenerate only if words are wrong.
 - Store the pick in `videos/<name>/voice.json`.
+- **Voice source since 2026-11-13 (owner bought credits there): primevoicelab.com** (ElevenLabs reseller studio; the owner gives the login; never commit it).
+  - Studio → One voice → ElevenLabs → voice "Robert - Business Book Narrator" (added under Voices by ID `BtWabtumIemAotTjP5sk`).
+  - Settings: model **Eleven V4 (Beta)**, **speed 1.25** (1.0 there comes out ~25 % slower than the old connector takes), stability 0.5, similarity 0.75, style 0, speaker boost on. Owner approved speed 1.25 on 2026-11-13.
+  - ~870 credits per 125-word script. Download from Library within 24 h, then `python3 engine/takes.py <name> <model> file:///path/to.mp3`.
+  - Needs the cloud environment "CentMind videos" (allows primevoicelab.com).
 
 ## Motion rules (learned from the comparison in research/compare-02-vs-cryothum.md)
 - Never freeze. The camera keeps pushing in slowly (`MM.DRIFT`). Star particles drift behind everything.

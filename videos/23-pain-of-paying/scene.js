@@ -30,7 +30,7 @@ function zoneA(g, t) {
   MM.label(g, 'CARD · FEELS LESS REAL', x + 330, -170, p(t, T.card1, 0.4), 18, { weight: 800 });
   for (let i = 0; i < 5; i++) { const k = ((t * 0.6 + i * 0.2) % 1); MM.coin(g, x + 330 + (k - 0.5) * 40, -470 - k * 160, 12, (1 - k) * 0.6 * p(t, T.card1, 0.4) * ghost); }
   if (end) {
-    MM.build(g, t, T.bill - 0.4, x, -380, 130, (g2, a) => MM.receipt(g2, x, -380, 0.9, a, ['TICKETS', 'DINNER', 'APPS'], '$1,240'));
+    MM.build(g, t, T.bill - 0.4, x, -380, 130, (g2, a) => MM.receipt(g2, x, -380, 0.9, a, [['TICKETS', '$480'], ['DINNER', '$310'], ['APPS', '$450']], '$1,240'));
     MM.pill(g, 'THE BILL IS ALWAYS REAL', x, -60, win(t, T.bill - 0.2, null), 22, true);
   }
 }
